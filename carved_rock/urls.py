@@ -16,8 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
+from django.conf import settings
+from django.conf.urls.static import static
+
+import debug_toolbar
+
 
 urlpatterns = [
+    # path('', TemplateView.as_view("store/index.html"), name="index"),
     path('admin/', admin.site.urls),
-    path('__debug__/', include('debug_toolbar.urls')),
-]
+    path('__debug__/', include(debug_toolbar.urls)),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# The part after the + allows serving uploaded images
+# Don't do this in production!
