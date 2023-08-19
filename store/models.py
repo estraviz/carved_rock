@@ -8,6 +8,12 @@ class Product(models.Model):
     description = models.TextField(default="", blank=True)
     sku = models.CharField(max_length=20, unique=True, verbose_name="stock keeping unit")
 
+    class Meta:
+        ordering = ['price', 'name']
+        constraints = [
+            models.CheckConstraint(check=models.Q(price__gte=0), name="price_not_negative")
+        ]
+
     def __str__(self):
         return self.name
 
@@ -23,6 +29,10 @@ class ProductImage(models.Model):  # one-to-many relationship
 class Category(models.Model):  # many-to-many relationship
     name = models.CharField(max_length=100)
     products = models.ManyToManyField('Product')
+
+    class Meta:
+        verbose_name_plural = "Categories"
+        ordering = ['name']
 
     def __str__(self) -> str:
         return self.name
