@@ -13,18 +13,18 @@ class ProductInStockQuerySet(models.QuerySet):
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    # stock_count = models.IntegerField(help_text="How many items are currently in stock.")
+    stock_count = models.IntegerField(help_text="How many items are currently in stock.")
     price = models.DecimalField(max_digits=6, decimal_places=2)
     description = models.TextField(default="", blank=True)
     sku = models.CharField(max_length=20, unique=True, verbose_name="stock keeping unit")
-    # slug = models.SlugField()
+    slug = models.SlugField()
 
     in_stock = ProductInStockQuerySet.as_manager()
 
-    # def save(self, *args, **kwargs) -> None:
-    #     if not self.slug:
-    #         self.slug = slugify(self.name)
-    #     return super().save(*args, **kwargs)
+    def save(self, *args, **kwargs) -> None:
+        if not self.slug:
+            self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
 
     class Meta:
         ordering = ['price', 'name']
@@ -41,14 +41,6 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class DigitalProduct(Product):
-    file = models.FileField()
-
-
-class PhysicalProduct(Product):
-    stock_count = models.IntegerField(help_text="How many items are currently in stock.")
 
 
 class ProductImage(models.Model):  # one-to-many relationship
